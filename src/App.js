@@ -1,26 +1,145 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export class App extends Component {
+
+  state = {
+    number_1: 0,
+    number_2: 0,
+    num_bits: 32,
+    process:[]
+  };
+
+  dec2bin = (dec) => {
+    var val = (dec >>> 0).toString(2);
+    if (val.length < this.state.num_bits) {
+      if (dec>=0) {
+        val = "0".repeat(Math.abs(this.state.num_bits - val.length)) + val;
+      } else {
+        val = "1".repeat(Math.abs(this.state.num_bits - val.length)) + val;
+      }
+    } else {
+      val = val.slice(val.length - this.state.num_bits);
+    }
+    return val;
+  };
+  
+  onSubmit = (e) => {
+    e.preventDefault();
+    // console.log(this.dec2bin(parseInt(this.state.number_1)));
+    let M = this.dec2bin(parseInt(this.state.number_1));
+    let Q = this.dec2bin(parseInt(this.state.number_2))
+    let Qminus = 0 ;
+    let process = [];
+    let counter = this.state.num_bits;
+    let A = "0".repeat(this.state.num_bits);
+process = process.concat([<tr  key={-1}>
+  <th scope="row">0</th>
+<td>{A}</td>
+  <td>{Q}</td>
+  <td>{Qminus}</td>
+  <td>Initialization</td>
+  
+</tr>]);
+// console.log(M)
+
+// console.log(this.dec2bin(~~parseInt(A,2)-~~parseInt(M)),~~parseInt(A,2),~~parseInt(M,2))
+while(counter){
+if(Q[Q.length-1]+Qminus === "10"){
+A = this.dec2bin(~~parseInt(A,2)-~~parseInt(M,2))
+process = process.concat([<tr key={this.state.num_bits-counter}>
+  <th scope="row"></th>
+<td>{A}</td>
+  <td>{Q}</td>
+  <td>{Qminus}</td>
+  <td>A = A - M</td>
+  
+</tr>]);
+
+}
+else if(Q[Q.length-1]+Qminus === "01"){
+  A = this.dec2bin(~~parseInt(A,2)+~~parseInt(M,2))
+  process = process.concat([<tr key={this.state.num_bits-counter}>
+    <th scope="row"></th>
+  <td>{A}</td>
+    <td>{Q}</td>
+    <td>{Qminus}</td>
+    <td>A = A + M</td>
+    
+  </tr>]);
+}
+Qminus = Q[Q.length-1];
+Q = Q.slice(0,Q.length-1);
+Q = A[A.length-1] + Q;
+A = A.slice(0,A.length-1);
+A = A[0] + A;
+counter = counter - 1;
+process = process.concat([<tr key={100*this.state.num_bits-counter}>
+  <th scope="row"></th>
+<td>{A}</td>
+  <td>{Q}</td>
+  <td>{Qminus}</td>
+  <td>Arithematic Right Shift AQQ<sub>-1</sub></td>
+  
+</tr>]);
+}
+process = process.concat([<tr key={100*this.state.num_bits-counter}>
+  <th scope="row"></th>
+<td></td>
+<td className="h3">{this.state.number_1} * {this.state.number_2} = {~~parseInt(Q,2)}</td>
+  
+  
+</tr>]);
+console.log(A,Q);
+    this.setState({process})
+
+
+  };
+  
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.onSubmit}>
+          <label className="form-group m-4">
+            Number of Bits :
+            <input
+              className="form-control"
+              value={this.state.num_bits}
+              onChange={(e) => this.setState({ num_bits: e.target.value })}
+            />
+          </label>
+
+          <label className="form-group m-4">
+            X :{" "}
+            <input
+              value={this.state.number_1}
+              onChange={(e) => this.setState({ number_1: e.target.value })}
+              className="form-control"
+            />
+          </label>
+
+          <label className="form-group m-4">
+            Y :{" "}
+            <input
+              value={this.state.number_2}
+              onChange={(e) => this.setState({ number_2: e.target.value })}
+              className="form-control"
+            />
+          </label>
+          <button className="btn btn-success">Submit</button>
+        </form>
+        <table className="table">
+        <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">A</th>
+      <th scope="col">Q</th>
+      <th scope="col">Q<sub>-1</sub></th>
+      <th scope="col">Process</th>
+    </tr>
+  </thead>{this.state.process}</table>
+      </div>
+    );
+  }
 }
 
 export default App;
