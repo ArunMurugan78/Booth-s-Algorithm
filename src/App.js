@@ -24,7 +24,7 @@ export class App extends Component {
     return val;
   };
   
-  onSubmit = (e) => {
+  onClick = (e) => {
     e.preventDefault();
     // console.log(this.dec2bin(parseInt(this.state.number_1)));
     let M = this.dec2bin(parseInt(this.state.number_1));
@@ -115,8 +115,12 @@ process = [<tr className="h4 text-danger p-4 text-center">Not Enough Bits</tr>]
 <img src={logo} alt="logo" style={{height:'30px',width:'auto'}}/>  Booth's Algorithm
 </div>
         </div>
-        <form>
-          <label className="form-group m-4">
+        <div className="container-fluid">
+
+      
+        <form >
+          <div className="row">
+          <label className="form-group m-4 col-xs-12 col-sm-12 col-md-4">
             Number of Bits :
             <input
               className="form-control"
@@ -125,7 +129,7 @@ process = [<tr className="h4 text-danger p-4 text-center">Not Enough Bits</tr>]
             />
           </label>
 
-          <label className="form-group m-4">
+          <label className="form-group m-4 col-xs-12 col-sm-12 col-md-4">
             X :{" "}
             <input
               value={this.state.number_1}
@@ -134,7 +138,7 @@ process = [<tr className="h4 text-danger p-4 text-center">Not Enough Bits</tr>]
             />
           </label>
 
-          <label className="form-group m-4">
+          <label className="form-group m-4 col-xs-12 col-sm-12 col-md-4">
             Y :{" "}
             <input
               value={this.state.number_2}
@@ -142,7 +146,9 @@ process = [<tr className="h4 text-danger p-4 text-center">Not Enough Bits</tr>]
               className="form-control"
             />
           </label>
-          <button className="btn btn-success" onClick={this.onSubmit}>Submit</button>
+          </div>
+        
+          <button className="btn btn-success m-4 btn-fluid btn-md" onClick={this.onClick}>Calculate !</button>
         </form>
         <table className="table">
         <thead>
@@ -154,6 +160,7 @@ process = [<tr className="h4 text-danger p-4 text-center">Not Enough Bits</tr>]
       <th scope="col">Process</th>
     </tr>
   </thead><tbody>{this.state.process}</tbody></table>
+  </div>
       </div>
     );
   }
