@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-
+import logo from './logo.png'
 export class App extends Component {
 
   state = {
     number_1: 0,
     number_2: 0,
-    num_bits: 32,
+    num_bits: 8,
     process:[]
   };
 
@@ -20,6 +20,7 @@ export class App extends Component {
     } else {
       val = val.slice(val.length - this.state.num_bits);
     }
+   
     return val;
   };
   
@@ -41,56 +42,67 @@ process = process.concat([<tr  key={-1}>
   
 </tr>]);
 // console.log(M)
-
+let key=0;
 // console.log(this.dec2bin(~~parseInt(A,2)-~~parseInt(M)),~~parseInt(A,2),~~parseInt(M,2))
+let flag = 1;
 while(counter){
+flag = 1;
 if(Q[Q.length-1]+Qminus === "10"){
-A = this.dec2bin(~~parseInt(A,2)-~~parseInt(M,2))
-process = process.concat([<tr key={this.state.num_bits-counter}>
-  <th scope="row"></th>
+A = this.dec2bin(~~parseInt(A.length!==32?A[0].repeat(32-A.length)+A:A,2)-~~parseInt(M.length!==32?M[0].repeat(32-M.length)+M:M,2))
+console.log("A-M",A)
+process = process.concat([<tr key={key}>
+  <th scope="row">{this.state.num_bits-counter+1}</th>
 <td>{A}</td>
   <td>{Q}</td>
   <td>{Qminus}</td>
   <td>A = A - M</td>
   
 </tr>]);
+key++;
 
 }
 else if(Q[Q.length-1]+Qminus === "01"){
-  A = this.dec2bin(~~parseInt(A,2)+~~parseInt(M,2))
-  process = process.concat([<tr key={this.state.num_bits-counter}>
-    <th scope="row"></th>
+  A = this.dec2bin(~~parseInt(A.length!==32?A[0].repeat(32-A.length)+A:A,2)+~~parseInt(M.length!==32?M[0].repeat(32-M.length)+M:M,2))
+ // console.log("A+M",A)
+  process = process.concat([<tr key={key}>
+    <th scope="row">{this.state.num_bits-counter+1}</th>
   <td>{A}</td>
     <td>{Q}</td>
     <td>{Qminus}</td>
     <td>A = A + M</td>
     
   </tr>]);
+  key++;
 }
+else flag = 0;
+
 Qminus = Q[Q.length-1];
 Q = Q.slice(0,Q.length-1);
 Q = A[A.length-1] + Q;
 A = A.slice(0,A.length-1);
 A = A[0] + A;
 counter = counter - 1;
-process = process.concat([<tr key={100*this.state.num_bits-counter}>
-  <th scope="row"></th>
+process = process.concat([<tr key={key}>
+  <th scope="row">{flag===0?this.state.num_bits-counter:null}</th>
 <td>{A}</td>
   <td>{Q}</td>
   <td>{Qminus}</td>
   <td>Arithematic Right Shift AQQ<sub>-1</sub></td>
   
 </tr>]);
+key++;
 }
-process = process.concat([<tr key={100*this.state.num_bits-counter}>
+process = process.concat([<tr key={key}>
   <th scope="row"></th>
 <td></td>
-<td className="h3">{this.state.number_1} * {this.state.number_2} = {~~parseInt(Q,2)}</td>
+<td className="h3">{this.state.number_1} * {this.state.number_2} = {~~parseInt((A+Q).length<32?A[0].repeat(32-(A+Q).length)+(A+Q):A+Q,2)}</td>
   
   
 </tr>]);
-console.log(A,Q);
-    this.setState({process})
+if(~~parseInt((A+Q).length<32?A[0].repeat(32-(A+Q).length)+(A+Q):A+Q,2)!==this.state.number_1*this.state.number_2){
+process = [<tr className="h4 text-danger p-4 text-center">Not Enough Bits</tr>]
+}
+   this.setState({process})
 
 
   };
@@ -98,13 +110,18 @@ console.log(A,Q);
   render() {
     return (
       <div>
-        <form onSubmit={this.onSubmit}>
+        <div className="navbar">
+<div className="navbar-brand">
+<img src={logo} alt="logo" style={{height:'30px',width:'auto'}}/>  Booth's Algorithm
+</div>
+        </div>
+        <form>
           <label className="form-group m-4">
             Number of Bits :
             <input
               className="form-control"
-              value={this.state.num_bits}
-              onChange={(e) => this.setState({ num_bits: e.target.value })}
+              value={this.state.num_bits} 
+              onChange={(e) =>{ if(e.target.value>=32){this.setState({ num_bits: 31})} else this.setState({ num_bits: e.target.value })}}
             />
           </label>
 
@@ -125,7 +142,7 @@ console.log(A,Q);
               className="form-control"
             />
           </label>
-          <button className="btn btn-success">Submit</button>
+          <button className="btn btn-success" onClick={this.onSubmit}>Submit</button>
         </form>
         <table className="table">
         <thead>
@@ -136,7 +153,7 @@ console.log(A,Q);
       <th scope="col">Q<sub>-1</sub></th>
       <th scope="col">Process</th>
     </tr>
-  </thead>{this.state.process}</table>
+  </thead><tbody>{this.state.process}</tbody></table>
       </div>
     );
   }
