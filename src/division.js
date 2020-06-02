@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import logo from './logo.png'
-import {Link } from 'react-router-dom'
-export class App extends Component {
+import logo from './divide.png'
+import {Link} from 'react-router-dom'
+export class Division extends Component {
 
   state = {
     number_1: 0,
@@ -28,81 +28,109 @@ export class App extends Component {
   onClick = (e) => {
     e.preventDefault();
     // console.log(this.dec2bin(parseInt(this.state.number_1)));
-    let M = this.dec2bin(parseInt(this.state.number_1));
-    let Q = this.dec2bin(parseInt(this.state.number_2))
-    let Qminus = 0 ;
+    if(this.state.number_1<0||this.state.number_2<=0){
+      return;
+    }
+    let M = this.dec2bin(parseInt(this.state.number_2));
+    let Q = this.dec2bin(parseInt(this.state.number_1))
+   
     let process = [];
     let counter = this.state.num_bits;
+
     let A = "0".repeat(this.state.num_bits);
+    
 process = process.concat([<tr  key={-1}>
   <th scope="row">0</th>
+  <td>{M}</td>
 <td>{A}</td>
   <td>{Q}</td>
-  <td>{Qminus}</td>
+
   <td>Initialization</td>
   
 </tr>]);
-// console.log(M)
+ console.log(A,Q,M)
+
 let key=0;
-// console.log(this.dec2bin(~~parseInt(A,2)-~~parseInt(M)),~~parseInt(A,2),~~parseInt(M,2))
-let flag = 1;
+
 while(counter){
-flag = 1;
-if(Q[Q.length-1]+Qminus === "10"){
+
+
+
+//Left Shift
+A = A.slice(1)+Q[0];
+Q = Q.slice(1);
+
+let prev_A = A;
+
 A = this.dec2bin(~~parseInt(A.length!==32?A[0].repeat(32-A.length)+A:A,2)-~~parseInt(M.length!==32?M[0].repeat(32-M.length)+M:M,2))
-console.log("A-M",A)
+
+
+
 process = process.concat([<tr key={key}>
   <th scope="row">{this.state.num_bits-counter+1}</th>
+  <td>{M}</td>
+<td>{prev_A}</td>
+  <td>{Q+"0"}</td>
+ 
+  <td>Arithematic Left Shift</td>
+  
+</tr>]);
+key++;
+process = process.concat([<tr key={key}>
+  <th scope="row"></th>
+  <td>{M}</td>
 <td>{A}</td>
-  <td>{Q}</td>
-  <td>{Qminus}</td>
+  <td>{Q+"0"}</td>
+ 
   <td>A = A - M</td>
   
 </tr>]);
 key++;
+if(A[0] ==="1"){
 
-}
-else if(Q[Q.length-1]+Qminus === "01"){
-  A = this.dec2bin(~~parseInt(A.length!==32?A[0].repeat(32-A.length)+A:A,2)+~~parseInt(M.length!==32?M[0].repeat(32-M.length)+M:M,2))
- // console.log("A+M",A)
-  process = process.concat([<tr key={key}>
-    <th scope="row">{this.state.num_bits-counter+1}</th>
-  <td>{A}</td>
-    <td>{Q}</td>
-    <td>{Qminus}</td>
-    <td>A = A + M</td>
-    
-  </tr>]);
-  key++;
-}
-else flag = 0;
-
-Qminus = Q[Q.length-1];
-Q = Q.slice(0,Q.length-1);
-Q = A[A.length-1] + Q;
-A = A.slice(0,A.length-1);
-A = A[0] + A;
-counter = counter - 1;
+A = prev_A;
+Q =Q + "0";
 process = process.concat([<tr key={key}>
-  <th scope="row">{flag===0?this.state.num_bits-counter:null}</th>
+  <th scope="row"></th>
+  <td>{M}</td>
 <td>{A}</td>
   <td>{Q}</td>
-  <td>{Qminus}</td>
-  <td>Arithematic Right Shift AQQ<sub>-1</sub></td>
+
+  <td>Q<sub>0</sub> {"<--"} 0 <br/> Restoring A (A = A + M)</td>
   
 </tr>]);
 key++;
 }
+else {
+
+Q =  Q+"1";
+process = process.concat([<tr key={key}>
+  <th scope="row"></th>
+  <td>{M}</td>
+<td>{A}</td>
+  <td>{Q}</td>
+
+  <td>Q<sub>0</sub> {"<--"} 1</td>
+  
+</tr>]);
+key++;
+
+}
+
+counter = counter - 1;
+
+key++;
+console.log(A,Q);
+}
+
 process = process.concat([<tr key={key}>
   <th scope="row"></th>
 <td></td>
-<td className="h3">{this.state.number_1} * {this.state.number_2} = {~~parseInt((A+Q).length<32?A[0].repeat(32-(A+Q).length)+(A+Q):A+Q,2)}</td>
+<td className="h3">Quotient = {~~parseInt(Q,2)}<br/>Reminder = {~~parseInt(A,2)}</td>
   
   
 </tr>]);
-if(~~parseInt((A+Q).length<32?A[0].repeat(32-(A+Q).length)+(A+Q):A+Q,2)!==this.state.number_1*this.state.number_2){
-process = [<tr className="h4 text-danger p-4 text-center">Not Enough Bits</tr>]
-}
+
    this.setState({process})
 
 
@@ -113,12 +141,13 @@ process = [<tr className="h4 text-danger p-4 text-center">Not Enough Bits</tr>]
       <div>
         <div className="navbar justify-content-center justify-content-md-between">
 <div className="navbar-brand">
-<img src={logo} alt="logo" style={{height:'30px',width:'auto'}}/>  Booth's Algorithm
+<img src={logo} alt="logo" style={{height:'30px',width:'auto'}}/>  Division Algorithm (Restoring)
 </div>
-<Link className="btn btn-secondary  btn-md m-3 m-md-0" to="/division">
-  Go To Division Algorithm
+<Link className="btn btn-secondary  btn-md m-3 m-md-0" to="/">
+  Go To Booth's Algorithm
 </Link>
         </div>
+        <em className="m-4">Note : This Algorithm only works when both the numbers are Positive</em>
         <div className="container-fluid">
 
       
@@ -152,15 +181,17 @@ process = [<tr className="h4 text-danger p-4 text-center">Not Enough Bits</tr>]
           </label>
           </div>
         
-          <button className="btn btn-success m-4 btn-fluid btn-md" onClick={this.onClick}>Calculate !</button>
+          <button className="btn btn-primary m-4  btn-md" onClick={this.onClick}>Calculate !</button>
         </form>
         <table className="table">
         <thead>
     <tr>
       <th scope="col">#</th>
+      <th scope="col">M</th>
       <th scope="col">A</th>
+
       <th scope="col">Q</th>
-      <th scope="col">Q<sub>-1</sub></th>
+      
       <th scope="col">Process</th>
     </tr>
   </thead><tbody>{this.state.process}</tbody></table>
@@ -170,4 +201,4 @@ process = [<tr className="h4 text-danger p-4 text-center">Not Enough Bits</tr>]
   }
 }
 
-export default App;
+export default Division;
