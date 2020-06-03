@@ -27,8 +27,9 @@ export class Division extends Component {
   
   onClick = (e) => {
     e.preventDefault();
-    // console.log(this.dec2bin(parseInt(this.state.number_1)));
+    console.log(this.dec2bin(parseInt(this.state.number_1)));
     if(this.state.number_1<0||this.state.number_2<=0){
+      this.setState({process:[]});
       return;
     }
     let M = this.dec2bin(parseInt(this.state.number_2));
@@ -122,15 +123,20 @@ counter = counter - 1;
 key++;
 console.log(A,Q);
 }
-
-process = process.concat([<tr key={key}>
+if(parseInt(Q,2) !== Math.floor(parseInt(this.state.number_1)/parseInt(this.state.number_2)) || parseInt(A,2)!== parseInt(this.state.number_1)%parseInt(this.state.number_2)){
+  process = [<tr className="h4 text-danger p-4 text-center">Not Enough Bits</tr>]
+  console.log(parseInt(Q,2),parseInt(A,2))
+}
+else 
+{
+  process = process.concat([<tr key={key}>
   <th scope="row"></th>
 <td></td>
-<td className="h3">Quotient = {~~parseInt(Q,2)}<br/>Reminder = {~~parseInt(A,2)}</td>
+<td className="h3">Quotient = {parseInt(Q,2)}<br/>Reminder = {parseInt(A,2)}</td>
   
   
 </tr>]);
-
+}
    this.setState({process})
 
 
@@ -159,6 +165,7 @@ process = process.concat([<tr key={key}>
               className="form-control"
               value={this.state.num_bits} 
               onChange={(e) =>{ if(e.target.value>=32){this.setState({ num_bits: 31})} else this.setState({ num_bits: e.target.value })}}
+              placeholder="Ex.  8"
             />
           </label>
 
@@ -168,6 +175,7 @@ process = process.concat([<tr key={key}>
               value={this.state.number_1}
               onChange={(e) => this.setState({ number_1: e.target.value })}
               className="form-control"
+              placeholder="Ex.  3"
             />
           </label>
 
@@ -177,6 +185,7 @@ process = process.concat([<tr key={key}>
               value={this.state.number_2}
               onChange={(e) => this.setState({ number_2: e.target.value })}
               className="form-control"
+              placeholder="Ex.  22"
             />
           </label>
           </div>

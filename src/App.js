@@ -130,7 +130,8 @@ process = [<tr className="h4 text-danger p-4 text-center">Not Enough Bits</tr>]
               className="form-control"
               value={this.state.num_bits} 
               onChange={(e) =>{ if(e.target.value>=32){this.setState({ num_bits: 31})} else this.setState({ num_bits: e.target.value })}}
-            />
+              placeholder="Ex.  8"
+          />
           </label>
 
           <label className="form-group m-4 col-xs-12 col-sm-12 col-md-4">
@@ -139,6 +140,7 @@ process = [<tr className="h4 text-danger p-4 text-center">Not Enough Bits</tr>]
               value={this.state.number_1}
               onChange={(e) => this.setState({ number_1: e.target.value })}
               className="form-control"
+              placeholder="Ex.  -5"
             />
           </label>
 
@@ -148,6 +150,7 @@ process = [<tr className="h4 text-danger p-4 text-center">Not Enough Bits</tr>]
               value={this.state.number_2}
               onChange={(e) => this.setState({ number_2: e.target.value })}
               className="form-control"
+              placeholder="Ex.  8"
             />
           </label>
           </div>
